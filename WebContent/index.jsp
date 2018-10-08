@@ -47,9 +47,10 @@ $(document).ready(function(){
 				<div class="col s12">
 					<ul id="tabs-swipe-demo" class="tabs">
 						<li class="tab col s3 active"><a href="#test-swipe-1">Classificação</a></li>
-						<li class="tab col s3"><a href="#test-swipe-2">Melhores voltas</a></li>
-						<li class="tab col s3"><a href="#test-swipe-3">Velocidade média</a></li>
-						<li class="tab col s3"><a href="#test-swipe-4">Melhor volta</a></li>
+						<li class="tab col s3"><a href="#test-swipe-2">Melhor volta</a></li>
+						<li class="tab col s3"><a href="#test-swipe-3">Melhores voltas</a></li>
+						<li class="tab col s3"><a href="#test-swipe-4">Velocidade média</a></li>
+						
 					</ul>
 				</div>
 				<div class="teste"></div>
@@ -84,6 +85,27 @@ $(document).ready(function(){
 					</table>
 				</div>
 				<div id="test-swipe-2" class="col s12">
+				<table class="highlight">
+					<thead>
+						<tr>
+							<th>Piloto</th>
+							<th>Número da volta</th>
+							<th>Tempo</th>
+							<th>Velocidade média</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td><s:property value="corrida.melhorVolta.piloto.nome" /></td>
+							<td><s:property value="corrida.melhorVolta.numeroVolta" /></td>
+							<td><s:date name="corrida.melhorVolta.tempo.toDate" format="mm:ss:SSS"/></td>
+							<td><s:number name="corrida.melhorVolta.velocidadeMedia" maximumFractionDigits="3" /> Km/h</td>
+							</tr>
+					</tbody>
+				</table>
+			</div>
+				<div id="test-swipe-3" class="col s12">
 					<table class="highlight">
 						<thead>
 							<tr>
@@ -104,7 +126,7 @@ $(document).ready(function(){
 						</tbody>
 					</table>
 				</div>
-				<div id="test-swipe-3" class="col s12">
+				<div id="test-swipe-4" class="col s12">
 					<table class="highlight">
 						<thead>
 							<tr>
@@ -123,27 +145,6 @@ $(document).ready(function(){
 						</tbody>
 					</table>
 				</div>
-			</div>
-			<div id="test-swipe-4" class="col s12">
-				<table class="highlight">
-					<thead>
-						<tr>
-							<th>Piloto</th>
-							<th>Número da volta</th>
-							<th>Tempo</th>
-							<th>Velocidade média</th>
-						</tr>
-					</thead>
-
-					<tbody>
-						<tr>
-							<td><s:property value="corrida.melhorVolta.piloto.nome" /></td>
-							<td><s:property value="corrida.melhorVolta.numeroVolta" /></td>
-							<td><s:date name="corrida.melhorVolta.tempo.toDate" format="mm:ss:SSS"/></td>
-							<td><s:number name="corrida.melhorVolta.velocidadeMedia" maximumFractionDigits="3" /> Km/h</td>
-							</tr>
-					</tbody>
-				</table>
 			</div>
 		</s:form>
 	</div>

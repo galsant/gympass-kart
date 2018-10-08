@@ -164,8 +164,8 @@ public class GerarResultadoBFacade {
 			
 			resultadoPiloto.setPiloto(piloto);
 			
-			SimpleDateFormat sdf2 = new SimpleDateFormat("mm:ss.SSS");
-			DateTime tempoAcumulado = new DateTime(sdf2.parse("0:00.000"));
+			SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
+			DateTime tempoAcumulado = new DateTime(sdf.parse("0:00.000"));
 			double velocidadeAcumulada = 0;
 			
 			int voltasCompletadas = 0;
