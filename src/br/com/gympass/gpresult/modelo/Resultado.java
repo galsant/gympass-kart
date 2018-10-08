@@ -1,7 +1,5 @@
 package br.com.gympass.gpresult.modelo;
 
-import java.util.List;
-
 import org.joda.time.DateTime;
 
 public class Resultado implements Comparable {
@@ -10,17 +8,9 @@ public class Resultado implements Comparable {
 	private int voltas;
 	private String classificacao;
 	private DateTime tempoTotal;
+	private DateTime diferenca;
 	private double velocidadeMedia;
 	private boolean completouProva;
-	
-	public DateTime getDiferenca() {
-		return diferenca;
-	}
-	public void setDiferenca(DateTime diferenca) {
-		this.diferenca = diferenca;
-	}
-	private DateTime diferenca;
-	private List<Volta> melhoresVoltas;
 	
 	public Piloto getPiloto() {
 		return piloto;
@@ -46,19 +36,11 @@ public class Resultado implements Comparable {
 	public void setTempoTotal(DateTime tempoTotal) {
 		this.tempoTotal = tempoTotal;
 	}
-	
-	public DateTime getDiff() {
+	public DateTime getDiferenca() {
 		return diferenca;
 	}
-	public void setDiff(DateTime diferenca) {
+	public void setDiferenca(DateTime diferenca) {
 		this.diferenca = diferenca;
-	}
-	
-	public List<Volta> getMelhoresVoltas() {
-		return melhoresVoltas;
-	}
-	public void setMelhoresVoltas(List<Volta> melhoresVoltas) {
-		this.melhoresVoltas = melhoresVoltas;
 	}
 	
 	public double getVelocidadeMedia() {

@@ -3,7 +3,6 @@ package br.com.gympass.gpresult.facade;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,80 +23,92 @@ import br.com.gympass.gpresult.modelo.Volta;
 
 public class GerarResultadoBFacade {
 	
-	public List<LogTxt> lerArquivoLogKart(File arquivo) throws ParseException {
+	/*
+	 * Método responsável por executar a leitura do arquivo enviado atraves do upload
+	 * 
+	 * @param file arquivo do upload.
+	 * @return Lista do tipo LogTxt representando o arquivo de Log
+	 */
+	/**
+	 * Método responsável por executar a leitura do arquivo enviado atraves do upload
+	 * 
+	 * @param arquivo
+	 * @return lista representando o arquivo de Log
+	 * @throws ParseException
+	 */
+	public List<LogTxt> lerArquivoLogKart(File arquivo) throws Exception {
 
 		ArrayList<LogTxt> logTxt = new ArrayList<>();
-		
-		try {
+	
+		FileReader fileReader = new FileReader(arquivo);
 
-			FileReader fileReader = new FileReader(arquivo);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
+		String linha = "";
 
-			String linha = "";
+		while ((linha = bufferedReader.readLine()) != null) {
 
-			while ((linha = bufferedReader.readLine()) != null) {
+			if (!linha.contains("Hora")) {
+				StringTokenizer tokenizer = new StringTokenizer(linha);
 
-				if (!linha.contains("Hora")) {
-					StringTokenizer tokenizer = new StringTokenizer(linha);
+				int count = 0;
 
-					int count = 0;
+				LogTxt registroLog = new LogTxt();
+				while (tokenizer.hasMoreTokens()) {
+					String valor = tokenizer.nextToken();
 
-					LogTxt registroLog = new LogTxt();
-					while (tokenizer.hasMoreTokens()) {
+					switch (count) {
+					case 0:
+						registroLog.setHorario(valor);
+						count++;
+						break;
+					case 1:
+						registroLog.setCodigoPiloto(valor);
+						count++;
+						break;
+					case 2:
+						count++;
+						break;
+					case 3:
+						registroLog.setNomePiloto(valor);
+						count++;
+						break;
+					case 4:
+						registroLog.setNumeroVolta(Integer.parseInt(valor));
+						count++;
+						break;
+					case 5:
+						SimpleDateFormat sdf = new SimpleDateFormat("mm:ss.SSS");
+						registroLog.setTempoVolta(new DateTime(sdf.parse(valor)));
+						count++;
+						break;
+					case 6:
+						valor = valor.replace(",", ".");
+						registroLog.setVelocidadeMedia(Float.parseFloat(valor));
+						logTxt.add(registroLog);
+						count++;
+						break;
 
-						String valor = tokenizer.nextToken();
-
-						switch (count) {
-						case 0:
-							SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:mmm");
-							registroLog.setHorario(valor);
-							count++;
-							break;
-						case 1:
-							registroLog.setCodigoPiloto(valor);
-							count++;
-							break;
-						case 2:
-							count++;
-							break;
-						case 3:
-							registroLog.setNomePiloto(valor);
-							count++;
-							break;
-						case 4:
-							registroLog.setNumeroVolta(Integer.parseInt(valor));
-							count++;
-							break;
-						case 5:
-							SimpleDateFormat sdf2 = new SimpleDateFormat("mm:ss.SSS");
-							registroLog.setTempoVolta(new DateTime(sdf2.parse(valor)));
-							count++;
-							break;
-						case 6:
-							SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm:ss:mmm");
-							valor = valor.replace(",", ".");
-							registroLog.setVelocidadeMedia(Float.parseFloat(valor));
-							logTxt.add(registroLog);
-							count++;
-							break;
-
-						default:
-							break;
-						}
+					default:
+						break;
 					}
 				}
-				
-			}
-			fileReader.close();
-			bufferedReader.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
+			}			
 		}
+		fileReader.close();
+		bufferedReader.close();
+		
 		return logTxt;
 	}
 	
+	
+	/**
+	 * Método responsável por interpretar o arquivo de Log preparando a lista de
+	 * pilotos e voltas.
+	 * 
+	 * @param arquivoLog
+	 * @return corrida - com pilotos e voltas
+	 */
 	public Corrida processaArquivoLog(List<LogTxt> arquivoLog) {
    
 		Set<Piloto> pilotos = new HashSet<>();
@@ -132,11 +143,17 @@ public class GerarResultadoBFacade {
         corrida.setPilotos(pilotos);
         corrida.setVoltas(voltas);
         
-        corrida.setMelhorVolta(recuperarMelhorVolta(voltas));
-		
         return corrida;
 	}
 
+	/**
+	 * Método responsável por agrupar as voltas por piloto e calcular o tempo total da prova,
+	 * velocidade média, gap para o primeiro colocado e voltas completadas.
+	 * 
+	 * @param corrida
+	 * @return classificacaoFinal - Lista representando o resultado final.
+	 * @throws ParseException
+	 */
 	public List<Resultado> processaResultadoFinal(Corrida corrida) throws ParseException {
 		
 		List<Resultado> classificacaoFinal = new ArrayList<>();
@@ -170,42 +187,20 @@ public class GerarResultadoBFacade {
 			resultadoPiloto.setVoltas(voltasCompletadas);
 			
 			classificacaoFinal.add(resultadoPiloto);
-		}
-		
+		}		
+
 		calcularDiferenca(classificacaoFinal);
-//		calcularDiferenca(classificacaoFinal);
-//		calcularMelhoresVoltas(corrida);
 		
 		return classificacaoFinal;
 	}
 	
-	public Volta recuperarMelhorVolta(List<Volta> voltas) {
-		Collections.sort(voltas);
-		
-		return voltas.get(0);
-	}
-	
-	public double recuperarVelocidadeMedia() {
-		return 0;
-	}
-	
-	public List<Volta> recuperarMelhoresVoltas(Corrida corrida) {
-		List<Volta> melhoresVoltas = new ArrayList<>();
-		Collections.sort(corrida.getVoltas());
-		for (Piloto piloto : corrida.getPilotos()) {
-			for (Volta volta : corrida.getVoltas()) {
-				if(piloto.equals(volta.getPiloto())) {				
-					melhoresVoltas.add(volta);
-					break;
-				}
-				
-			}
-		}
-		Collections.sort(melhoresVoltas);
-		
-		return melhoresVoltas;
-	}
-	
+	/**
+	 * Método responsável por receber o resultado final da prova e calcular o 
+	 * gap de tempo dos pilotos e relação ao primeiro colocado, adicionar a posicção de classificação
+	 * e verificar se o piloto completou o total de voltas estipulado.
+	 * 
+	 * @param classificacao
+	 */
 	private void calcularDiferenca(List<Resultado> classificacao) {
 	
 		Collections.sort(classificacao);
@@ -226,7 +221,7 @@ public class GerarResultadoBFacade {
 			}
 				
 			if(contador != 1)
-			resultado.setDiff(resultado.getTempoTotal()
+			resultado.setDiferenca(resultado.getTempoTotal()
 										.minusMinutes(tempoCampeao.getMinuteOfHour())
 										.minusSeconds(tempoCampeao.getSecondOfMinute())
 										.minusMillis(tempoCampeao.getMillisOfSecond()));

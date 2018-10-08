@@ -35,9 +35,12 @@ public class GerarResultadoAction extends ActionSupport {
 		
 		try {
 			 arquivoLog = facade.lerArquivoLogKart(upload);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			this.addActionError("Erro ao ler arquivo.");
+			return "input";
+
 		}
 		
 		corrida = facade.processaArquivoLog(arquivoLog);
@@ -47,16 +50,18 @@ public class GerarResultadoAction extends ActionSupport {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			this.addActionError("Erro tratar tempo da volta.");
+			return "input";
 		}
 		
-		melhoresVoltas = facade.recuperarMelhoresVoltas(corrida);
+		melhoresVoltas = corrida.getMelhoresVoltas();
 
 		return "success";
 	}
 	
 	public void validateExecute() {
 		if (upload == null) {
-			this.addActionError("Arquivo não selecionado.");
+			this.addActionError("Arquivo não selecionado ou inexistente.");
 			return;
 		}
 	}

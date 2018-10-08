@@ -33,7 +33,7 @@ $(document).ready(function(){
 	       			<span>Arquivo</span><s:file name="upload" label="File"  />
 	       		</div>
 	       		<div class="file-path-wrapper col s4">
-	       			<input class="file-path validate" type="text" placeholder="Faça upload do Log da corrida">
+	       			<input class="file-path validate" type="text" placeholder="Faça upload do Log de corrida">
 	       		</div>
 	       		<s:submit class="waves-effect waves-light btn red lighten-2" type="submit" value="Gerar Resultado"/>
 			</div>
